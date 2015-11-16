@@ -8,31 +8,31 @@ try:
 	matplotlib.use('Agg')
 	import matplotlib.pyplot as plt
 except:
-	print "Could not find matplotlib; will continue without distribution plot"
+	print ("Could not find matplotlib; will continue without distribution plot")
 	plot_result = False
 
 def main(argv):
-	inputfile = ''
-	output_name = ''
-	try:
-		opts, args = getopt.getopt(argv,"hi:o:f:",["input_file=","out_name=","fasta_file="])
-	except getopt.GetoptError:
-		print 'usage: assess_TIS_annotation.py -i <inputpttfile> -f <fastafile> -o <outputfile>'
-		sys.exit(2)
-	for opt, arg in opts:
-		if opt == '-h':
-			print 'usage: assess_TIS_annotation.py -i <inputfile> -f <fastafile> -o <outputfile>'
-			sys.exit()
-		elif opt in ("-i", "--input_file"):
-			inputfile = arg
-		elif opt in ("-o", "--out_name"):
-			output_name = arg
+    inputfile = ''
+    output_name = ''
+    try:
+        opts, args = getopt.getopt(argv,"hi:o:f:",["input_file=","out_name=","fasta_file="])
+    except getopt.GetoptError:
+            print ('usage: assess_TIS_annotation.py -i <inputpttfile> -f <fastafile> -o <outputfile>')
+            sys.exit(2)
+            for opt, arg in opts:
+                if opt == '-h':
+                    print ('usage: assess_TIS_annotation.py -i <inputfile> -f <fastafile> -o <outputfile>')
+                    sys.exit()
+                elif opt in ("-i", "--input_file"):
+                    inputfile = arg
+                elif opt in ("-o", "--out_name"):
+                    output_name = arg
                 elif opt in ("-f", "--fasta_file"):
-                        fasta_file = arg
-	if len(inputfile) == 0 or len(output_name) == 0:
-		print 'usage: assess_TIS_annotation.py -i <inputfile> -f <fastafile> -o <out_name>'
-		sys.exit()
-	return inputfile,fasta_file,output_name
+                    fasta_file = arg
+                    if len(inputfile) == 0 or len(output_name) == 0:
+                            print ('usage: assess_TIS_annotation.py -i <inputfile> -f <fastafile> -o <out_name>')
+                            sys.exit()
+                            return inputfile,fasta_file,output_name
 
 
    
@@ -50,7 +50,7 @@ def init_genome(input_file,fasta_file,outname):
 	genome_seq,genome_gc = get_genome_seq(fasta_file)
 	genome_orfs,name = read_ptt(input_file)
 	if len(genome_orfs) < min_number_of_orfs:
-		print "Number of ORFs below threshold, exiting"
+		print ("Number of ORFs below threshold, exiting")
 		sys.exit()
 	candidate_starts_per_orf, initial_pca_keys = get_codon_search_seqs(genome_orfs,genome_seq,name,genome_gc)
 	return None
@@ -66,8 +66,8 @@ def get_genome_seq(fasta_file):
 	genome_seq = genome_seq.upper()
 	genome_length = float(len(genome_seq))
 	gc = (genome_seq.count("G")+genome_seq.count("C"))/genome_length
-	print "Loading genome sequence done.."
-	print "GC%:\t",round(gc,3)
+	print ("Loading genome sequence done..")
+	print ("GC%:\t",round(gc,3))
 	return genome_seq,gc
 	
 def reverse_sequence(sequence):
@@ -92,7 +92,7 @@ def read_ptt(genome):
 		strand = line[1]
 		locus_tag = line[5]
 		genome_orfs[locus_tag] = [int(loc[0]),int(loc[1]),strand]
-	print "Loading ORF annotation done..."
+	print ("Loading ORF annotation done...")
 	return genome_orfs,name
 	
 def get_codon_search_seqs(genome_orfs,genome_seq,name,genome_gc):
@@ -275,16 +275,16 @@ def plot_data(combined_dict,name,number_of_orfs,coding_alt_start_freq,upstream_a
 	try:
 		correlation = stats.spearmanr(values,function_values)
 		correlation_up = stats.spearmanr(values[0:65],function_values[0:65])
-		print "Quality correlation:\t",round(correlation_up[0],3)
+		print ("Quality correlation:\t",round(correlation_up[0],3))
 		if not os.path.exists(out_dir):
 			os.makedirs(out_dir)
-		output_file = open(output_name+"_correlation.txt","w") #aangepast, was namelijk output_file = open(out_dir+output_name+"_correlation.txt","w")
+		output_file = open(out_dir+output_name+"_correlation.txt","w")
 		output_file.write("Name\tGC-percentage\t#ORFs\tCorrelation Complete\tCorrelation Upstream\n")
 		output_file.write(name+"\t"+str(round(genome_gc,2))+"\t"+str(number_of_orfs)+"\t"+str(round(correlation[0],2))+"\t"+str(round(correlation_up[0],2))+"\n")
 		output_file.close()
-		print "TIS correlation file generated.."
+		print ("TIS correlation file generated..")
 	except:
-		print "Could not write output file.."
+		print ("Could not write output file..")
 		pass
 	if plot_result == True:
 		try:
@@ -294,12 +294,12 @@ def plot_data(combined_dict,name,number_of_orfs,coding_alt_start_freq,upstream_a
 				os.makedirs(out_dir)
 			fig.savefig(out_dir+name+'_distribution.png')
 			plt.clf()
-			print "TIS distribution plot generated..."
+			print ("TIS distribution plot generated...")
 		except:
-			print "plot for", name,"save failed..."
+			print ("plot for", name,"save failed...")
 			plt.clf()
 	return None
 
 if __name__ == "__main__":
         input_file,fasta_file,output_name = main(sys.argv[1:])	
-	init_genome(input_file,fasta_file,output_name)
+        init_genome(input_file,fasta_file,output_name)

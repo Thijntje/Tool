@@ -1,0 +1,2 @@
+Name	GC-percentage	#ORFs	Correlation Complete	Correlation Upstream
+Escherichia coli str. K-12 substr. MG1655	0.51	4140	0.91	0.98
